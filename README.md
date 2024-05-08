@@ -5,6 +5,6 @@ LanCS project first year
 - 2nd commit on 6/5/2024
 - Added nonogram algorithm to check BMP images for consecutive black pixels
 -----------------------------------------------------
--3rd commit on 8/5/2024
--Refined nonogram algorithm to include all rows and columns
------------------------------------------------------
+- 3rd commit on 8/5/2024
+- Refined algorithm to be on top and left side
+- 
