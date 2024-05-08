@@ -77,17 +77,13 @@ public class Nonogram extends JFrame
                     public void mouseClicked(MouseEvent e) {
                         JLabel clickedLabel = (JLabel) e.getSource();
                         Color labelColor = label.getBackground();
-                        if (labelColor.equals(Color.red)) 
+                        if (labelColor.equals(Color.white)) 
                         {
                             clickedLabel.setBackground(Color.black); // Change color to black when clicked
                         } 
-                        else if (labelColor.equals(Color.black)) 
-                        {
-                            clickedLabel.setBackground(Color.white); // Change color to white when clicked
-                        } 
                         else 
                         {
-                            clickedLabel.setBackground(Color.red); // Change color to red when clicked
+                            clickedLabel.setBackground(Color.white); // Change color to red when clicked
                         }
                         clickedLabel.repaint(); // update the label visually
                     }
@@ -181,7 +177,7 @@ public class Nonogram extends JFrame
                     } 
 
 
-                    
+                    // Algorithm to produce numbers on the left of the nonogram
                     ArrayList<ArrayList<Integer>> y_counterArrayList = new ArrayList<>(); // ArrayList to store counters for each column
                     for (int y = 0; y < height; y++) 
                     {
@@ -190,18 +186,18 @@ public class Nonogram extends JFrame
                         int counter = 0; // Initialize counter for current column
                     
                         for (int i = 0; i < height; i++) {
-                            if (i > 0 && answerPixelColor[y][i] == answerPixelColor[y][i - 1]) 
+                            if (answerPixelColor[y][i] == Color.black) 
                             {
-                                // Increment counter if the current color is the same as the previous one
+                                // Increment counter if the current color is black
                                 counter++;
                             } 
-                            else 
+                            else if (answerPixelColor[y][i] == Color.white)
                             {
                                 // Add the current counter value to the list and reset counter
                                 if (counter > 0) {
                                     counterArrayList.add(counter);
                                 }
-                                counter = 1; // Start a new counter for the current color
+                                counter = 0; // Start a new counter for the current color
                             }
                         }
                     
@@ -215,16 +211,63 @@ public class Nonogram extends JFrame
                         y_counterArrayList.add(counterArrayList);
                         
                     }
-                    for (int i = 0; i < y_counterArrayList.size(); i++) {
-                        System.out.println(y_counterArrayList.get(i));
-                    }
-                    System.out.println(y_counterArrayList.size());
 
+                    // Code to repaint side labels to contain nonogram numbers
                     for (int y = 0; y < y_counterArrayList.size(); y++) 
                     {
                         Integer[] counts = y_counterArrayList.get(y).toArray(new Integer[0]); // Get counts for current column
                         System.out.println(counts);
                         JLabel label = labels[y + 1][0];
+                        label.setText(Arrays.toString(counts));
+                        label.repaint();
+                    }
+
+
+                    // Algorithm to produce numbers on the left of the nonogram
+                    ArrayList<ArrayList<Integer>> x_counterArrayList = new ArrayList<>(); // ArrayList to store counters for each column
+                    for (int x = 0; x < width; x++) 
+                    {
+
+                        ArrayList<Integer> counterArrayList = new ArrayList<>(); // ArrayList to store counters for a single column
+                        int counter = 0; // Initialize counter for current column
+                    
+                        for (int i = 0; i < width; i++) {
+                            if (answerPixelColor[i][x] == Color.black) 
+                            {
+                                // Increment counter if the current color is black
+                                counter++;
+                            } 
+                            else if (answerPixelColor[i][x] == Color.white)
+                            {
+                                // Add the current counter value to the list and reset counter
+                                if (counter > 0) {
+                                    counterArrayList.add(counter);
+                                }
+                                counter = 0; // Start a new counter for the current color
+                            }
+                        }
+                    
+                        // Add the last counter value to the list
+                        if (counter > 0) 
+                        {
+                            counterArrayList.add(counter);
+                        }
+                    
+                        // Add the list of counters for the current column to the main list
+                        x_counterArrayList.add(counterArrayList);
+                        
+                    }
+                    for (int i = 0; i < x_counterArrayList.size(); i++) {
+                        System.out.println(x_counterArrayList.get(i));
+                    }
+                    System.out.println(x_counterArrayList.size());
+
+                    // Code to repaint side labels to contain nonogram numbers
+                    for (int x = 0; x < x_counterArrayList.size(); x++) 
+                    {
+                        Integer[] counts = x_counterArrayList.get(x).toArray(new Integer[0]); // Get counts for current column
+                        System.out.println(counts);
+                        JLabel label = labels[0][x + 1];
                         label.setText(Arrays.toString(counts));
                         label.repaint();
                     }
