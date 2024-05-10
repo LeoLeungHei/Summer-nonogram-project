@@ -7,4 +7,9 @@ LanCS project first year
 -----------------------------------------------------
 - 3rd commit on 8/5/2024
 - Refined algorithm to be on top and left side
-- 
+----------------------------------------------------- 
+- 4th commit on 10/05/2024
+- added check answer algorithm
+- added unknown squares
+- added popups to tell user information
+-----------------------------------------------------
