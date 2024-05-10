@@ -36,7 +36,7 @@ public class Nonogram extends JFrame
         // Populate top left with 3 labels to make a square for the empty space
         for (int i = 0; i < 3; i++)
         {
-            JLabel topLeftLabel = new JLabel("<html>This is a long text that will wrap onto the next line if it exceeds the width</html>");
+            JLabel topLeftLabel = new JLabel();
             topLeftLabel.setPreferredSize(new Dimension(VERTICAL_WHITE_LABEL_LENGTH, LABEL_SIZE));
             topLeftLabel.setBackground(Color.WHITE); // Set background color
             topLeftLabel.setOpaque(true);
@@ -44,7 +44,7 @@ public class Nonogram extends JFrame
         }
 
 
-
+        
 
         int frameSize = (width) * LABEL_SIZE; // Set the Size of the grid
         setSize(frameSize + HORIZONTAL_WHITE_LABEL_WIDTH, frameSize + VERTICAL_WHITE_LABEL_LENGTH); // Set the size of the frame
