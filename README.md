@@ -13,3 +13,5 @@ LanCS project first year
 - added unknown squares
 - added popups to tell user information
 -----------------------------------------------------
+- 5th commit on 10/05/2024
+- made so top text can wrap around the labels
