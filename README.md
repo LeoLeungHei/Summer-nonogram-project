@@ -15,3 +15,6 @@ LanCS project first year
 -----------------------------------------------------
 - 5th commit on 10/05/2024
 - made so top text can wrap around the labels
+-----------------------------------------------------
+- 6th commit on 13/05/2024
+- changed file reading algorithm to read bmp file from first priciples with no external libraries
