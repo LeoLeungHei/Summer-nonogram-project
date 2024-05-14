@@ -26,10 +26,10 @@ LanCS project first year
 - made show/hide button save user progress and revert to it
 ----------------------------------------------------
 How to run:
-Linux:
-wget https://github.com/LeoLeungHei/Summer-nonogram-project/blob/main/Nonogram.java
-Windows:
-curl -O https://github.com/LeoLeungHei/Summer-nonogram-project/blob/main/Nonogram.java
-Both:
-javac Nonogram.java
-java Nonogram
+- Linux:
+- wget https://github.com/LeoLeungHei/Summer-nonogram-project/blob/main/Nonogram.java](https://raw.githubusercontent.com/LeoLeungHei/Summer-nonogram-project/main/Nonogram.java
+- Windows:
+- curl -O https://github.com/LeoLeungHei/Summer-nonogram-project/blob/main/Nonogram.java](https://raw.githubusercontent.com/LeoLeungHei/Summer-nonogram-project/main/Nonogram.java
+- Both:
+- javac Nonogram.java
+- java Nonogram
