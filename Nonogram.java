@@ -13,14 +13,14 @@ public class Nonogram extends JFrame
     private JLabel[] topLabels;
     private JLabel[] leftLabels;
     private static final int LABEL_SIZE = 50;
-    private static final int VERTICAL_WHITE_LABEL_LENGTH = 150;
-    private static final int HORIZONTAL_WHITE_LABEL_WIDTH = 150;
+    private static final int VERTICAL_WHITE_LABEL_LENGTH = 100;
+    private static final int HORIZONTAL_WHITE_LABEL_WIDTH = 100;
     private int height = 15;
     private int width = 15;
     private Color[][] answerPixelColor;
+    private Color[][] currentuserColors;
 
-
-    // Utility method to convert a byte array to an integer
+    // Function to convert a byte array to an integer
     private static int byteArrayToInt(byte[] bytes, int start, int end) 
     {
         int value = 0;
@@ -31,23 +31,138 @@ public class Nonogram extends JFrame
         return value;
     }
 
-    // Utility method to convert decimal to binary
-    public static String decimalToBinary(int decimal) {
-        if (decimal == 0) {
-            return "0"; // Special case for 0
+    private void updateLabels(Color color, Color[][] answerPixelColor, int height, int width) {
+        // Algorithm to produce numbers on the left of the nonogram
+        ArrayList<ArrayList<Integer>> y_counterArrayList = new ArrayList<>(); // ArrayList to store counters for each row
+        for (int y = 0; y < height; y++) 
+        {
+            ArrayList<Integer> counterArrayList = new ArrayList<>(); // ArrayList to store counters for a single row
+            int counter = 0; // Initialize counter for current row
+                    
+            for (int i = 0; i < width; i++) 
+            {
+                if (answerPixelColor[y][i] == color) 
+                {
+                // Increment counter if the current color is black
+                    counter++;
+                } 
+                else if (answerPixelColor[y][i] != color)
+                {
+                // Add the current counter value to the list and reset counter
+                if (counter > 0) 
+                    {
+                        counterArrayList.add(counter);
+                    }
+                    counter = 0; // Start a new counter for the current color
+                }
+            }
+                    
+            // Add the last counter value to the list
+            if (counter > 0) 
+            {
+                counterArrayList.add(counter);
+            }
+                    
+            // Add the list of counters for the current row to the main list
+            y_counterArrayList.add(counterArrayList);         
         }
-
-        StringBuilder binary = new StringBuilder();
-
-        while (decimal > 0) {
-            int remainder = decimal % 2;
-            binary.insert(0, remainder); // Prepend the remainder to the binary string
-            decimal /= 2; // Update the quotient for the next iteration
+    
+        // Code to repaint side labels to contain nonogram numbers
+        for (int y = 0; y < y_counterArrayList.size(); y++) 
+        {
+            Integer[] counts = y_counterArrayList.get(y).toArray(new Integer[0]); // Get counts for current row
+            JLabel label = leftLabels[y];
+            String currentText = label.getText();
+            String newText = "";
+            if (color == Color.black)
+            {
+                newText = currentText + "<html><font color='black'>" + Arrays.toString(counts) + "</font><html>";
+            }
+            else if (color == Color.red)
+            {
+                newText = currentText + "<html><font color='red'>" + Arrays.toString(counts) + "</font><html>";
+            }
+            else if (color == Color.green)
+            {
+                newText = currentText + "<html><font color='green'>" + Arrays.toString(counts) + "</font><html>";
+            }
+            else if (color == Color.blue)
+            {
+                newText = currentText + "<html><font color='blue'>" + Arrays.toString(counts) + "</font><html>";
+            }
+            label.setText(newText);
+            label.setHorizontalAlignment(SwingConstants.CENTER);
+            label.setVerticalAlignment(SwingConstants.CENTER);
+            label.repaint();
         }
-
-        return binary.toString();
+    
+    
+        // Algorithm to produce numbers on the top of the nonogram
+        ArrayList<ArrayList<Integer>> x_counterArrayList = new ArrayList<>(); // ArrayList to store counters for each column
+        for (int x = 0; x < width; x++) 
+        {
+    
+            ArrayList<Integer> counterArrayList = new ArrayList<>(); // ArrayList to store counters for a single column
+            int counter = 0; // Initialize counter
+                    
+            for (int i = 0; i < height; i++) 
+            {
+                if (answerPixelColor[i][x] == color) 
+                {
+                    // Increment counter if the current color is the one being counted
+                    counter++;
+                } 
+                else if (answerPixelColor[i][x] != color)
+                {
+                    // Add the current counter value to the list and reset counter
+                    if (counter > 0) 
+                    {
+                        counterArrayList.add(counter);
+                    }
+                    counter = 0; // Start a new counter for the current color
+                }
+            }
+                    
+            // Add the last counter value to the list
+            if (counter > 0) 
+            {
+                counterArrayList.add(counter);
+            }
+                    
+            // Add the list of counters for the current column to the main list
+            x_counterArrayList.add(counterArrayList);
+                        
+        }
+    
+        // Code to repaint side labels to contain nonogram numbers
+        for (int x = 0; x < x_counterArrayList.size(); x++) 
+        {
+            Integer[] counts = x_counterArrayList.get(x).toArray(new Integer[0]); // Get counts for current column
+            JLabel label = topLabels[x];
+            String currentText = label.getText();
+            String newText = "";
+            if (color == Color.black)
+            {
+                newText = currentText + "<html><font color='black'>" + Arrays.toString(counts) + "</font><html>";
+            }
+            else if (color == Color.red)
+            {
+                newText = currentText + "<html><font color='red'>" + Arrays.toString(counts) + "</font><html>";
+            }
+            else if (color == Color.green)
+            {
+                newText = currentText + "<html><font color='green'>" + Arrays.toString(counts) + "</font><html>";
+            }
+            else if (color == Color.blue)
+            {
+                newText = currentText + "<html><font color='blue'>" + Arrays.toString(counts) + "</font><html>";
+            }
+            label.setText(newText);
+            label.setHorizontalAlignment(SwingConstants.CENTER);
+            label.setVerticalAlignment(SwingConstants.CENTER);
+            label.repaint();
+        }
     }
-
 
     public Nonogram()
     {
@@ -62,8 +177,8 @@ public class Nonogram extends JFrame
         JPanel topPanel = new JPanel(new GridLayout(1, width + 3, 0, 0));// Top horizontal panel for nonogram logic, +3 to add a blank square
         JPanel leftPanel = new JPanel(new GridLayout(height, 1, 0, 0));// Left vertical panel for nonogram logic
 
-        // Populate top left with 3 labels to make a square for the empty space
-        for (int i = 0; i < 3; i++)
+        // Populate top left with 2 labels to make a square for the empty space
+        for (int i = 0; i < 2; i++)
         {
             JLabel topLeftLabel = new JLabel();
             topLeftLabel.setPreferredSize(new Dimension(VERTICAL_WHITE_LABEL_LENGTH, LABEL_SIZE));
@@ -143,7 +258,6 @@ public class Nonogram extends JFrame
             @Override
             public void actionPerformed(ActionEvent event) 
             {
-                System.out.println("Import Button clicked!");
                 JFileChooser fileChooser = new JFileChooser();// Initilize File chooser to importbutton
                 fileChooser.setCurrentDirectory(new File("C:\\Users\\user\\Downloads\\bmp-files\\summer-project"));
                 FileNameExtensionFilter filter = new FileNameExtensionFilter("BMP images", "bmp");
@@ -176,165 +290,281 @@ public class Nonogram extends JFrame
                 System.out.println("width: " +width);
                 System.out.println("height: " + height);
 
+                // Update frame size
+                int frameSize_X = width * LABEL_SIZE;
+                int frameSize_Y = height * LABEL_SIZE;
+                setSize(frameSize_X + HORIZONTAL_WHITE_LABEL_WIDTH, frameSize_Y + VERTICAL_WHITE_LABEL_LENGTH);
+                revalidate();
+                repaint();
+
+                // Remove existing label grids
+                gridPanel.removeAll();
+                topPanel.removeAll();
+                leftPanel.removeAll();
+
+                // Update label grids
+                gridPanel.setLayout(new GridLayout(height, width, 0, 0));
+                topPanel.setLayout(new GridLayout(1, width + 3, 0, 0));
+                leftPanel.setLayout(new GridLayout(height, 1, 0, 0));
+                labels = new JLabel[height][width];
+                topLabels = new JLabel[width];
+                leftLabels = new JLabel[height];
+
+                // Recreate top panel with updated labels
+                for (int i = 0; i < 2; i++) 
+                {
+                    JLabel topLeftLabel = new JLabel();
+                    topLeftLabel.setPreferredSize(new Dimension(VERTICAL_WHITE_LABEL_LENGTH, LABEL_SIZE));
+                    topLeftLabel.setBackground(Color.WHITE);
+                    topLeftLabel.setOpaque(true);
+                    topPanel.add(topLeftLabel);
+                }
+                for (int i = 0; i < width; i++) 
+                {
+                    JLabel emptyLabel = new JLabel();
+                    emptyLabel.setPreferredSize(new Dimension(LABEL_SIZE, VERTICAL_WHITE_LABEL_LENGTH));
+                    emptyLabel.setBackground(Color.WHITE);
+                    emptyLabel.setOpaque(true);
+                    topPanel.add(emptyLabel);
+                    topLabels[i] = emptyLabel;
+                }
+
+                // Recreate left panel with updated labels
+                for (int i = 0; i < height; i++) 
+                {
+                    JLabel emptyLabel = new JLabel();
+                    emptyLabel.setPreferredSize(new Dimension(HORIZONTAL_WHITE_LABEL_WIDTH, LABEL_SIZE));
+                    emptyLabel.setBackground(Color.WHITE);
+                    emptyLabel.setOpaque(true);
+                    leftPanel.add(emptyLabel);
+                    leftLabels[i] = emptyLabel;
+                }
+
+                // Recreate label grid
+                for (int i = 0; i < height; i++) 
+                {
+                    for (int j = 0; j < width; j++) 
+                    {
+                        JLabel label = new JLabel();
+                        label.setSize(new Dimension(LABEL_SIZE, LABEL_SIZE));
+                        label.setBorder(BorderFactory.createLineBorder(Color.BLACK));
+                        label.setBackground(Color.YELLOW);
+                        label.setOpaque(true);
+                        label.addMouseListener(new MouseAdapter() 
+                        {
+                            @Override
+                            public void mouseClicked(MouseEvent e) 
+                            {
+                                JLabel clickedLabel = (JLabel) e.getSource();
+                                Color labelColor = clickedLabel.getBackground();
+                                // Change colors
+                                if (labelColor.equals(Color.YELLOW)) 
+                                {
+                                    clickedLabel.setBackground(Color.BLACK);
+                                } 
+                                else if (labelColor.equals(Color.BLACK)) 
+                                {
+                                    clickedLabel.setBackground(Color.WHITE);
+                                } 
+                                else if (labelColor.equals(Color.WHITE)) 
+                                {
+                                   clickedLabel.setBackground(Color.BLACK);
+                                }
+                                clickedLabel.repaint();
+                            }
+                        });
+                        labels[i][j] = label;
+                        gridPanel.add(label);
+                    }
+                }
+                // Repaint the panels
+                topPanel.revalidate();
+                topPanel.repaint();
+                leftPanel.revalidate();
+                leftPanel.repaint();
+                gridPanel.revalidate();
+                gridPanel.repaint();
+
+
+
                 // Get color depth of pixels
                 int bitDepth = byteArrayToInt(bitmapInfoHeader, 14, 15);
                 System.out.println("bit depth: " + bitDepth);
 
-                // Calculate the size of the pixel data
-                int dataSize = (int)Math.ceil(width / 8.0);
-                if (dataSize < 4)
-                {
-                    dataSize = 4; // Pad null bytes
-                }
-                System.out.println("data size: " + dataSize);
-
-
                 // Jump to pixel data bytes - file header and information header (54 bytes)
                 fis.skip(pixelDatapointer - 54);
 
-            
-                // Read rows to import image to array
+                currentuserColors = new Color[height][width];
                 answerPixelColor = new Color[height][width];
-                for (int i = height - 1; i >= 0; i--) // Loop from height - 1 to 0
-                { 
-                    byte[] pixels = new byte[dataSize];
-                    fis.read(pixels); // Read pixel data into the array
-                    
-                    for (int j = 0; j < width; j++) // Loop over each bit in the row
+                if (bitDepth == 1) // Read bit depth to determine what algorithm to use
+                {
+                    // Calculate the size of the pixel data
+                    int dataSize = (int)Math.ceil(width / 8.0);
+                    if (dataSize < 4)
+                    {
+                        dataSize = 4; // Pad null bytes
+                    }
+                    System.out.println("data size: " + dataSize);
+
+                    // Read rows to import image to array
+
+                    for (int i = height - 1; i >= 0; i--) // Loop from height - 1 to 0
                     { 
-                        int byteIndex = j / 8; // Index of the byte containing the bit
-
-                        int bitIndex = 7 - (j % 8); // Index of the bit within the byte (7 to 0)
-
-                        int mask = 1 << bitIndex; // Mask to extract the bit
-
-                        // Check if the bit is 1 or 0 in the current byte
-                        boolean isBitSet = (pixels[byteIndex] & mask) != 0;
-
-                        // Set the color in the array depending on bit
-                        answerPixelColor[i][j] = isBitSet ? Color.white : Color.black;
-                    }
-                    
-                }               
-                for (int i = 0; i < height; i++) {
-                    for (int j = 0; j < width; j++) {
-                        System.out.print(answerPixelColor[i][j] == Color.black ? "B " : "W ");
-                    }
-                    System.out.println(); // Move to the next line for the next row
+                        byte[] pixels = new byte[dataSize];
+                        fis.read(pixels); // Read pixel data into the array
+                        
+                        for (int j = 0; j < width; j++) // Loop over each bit in the row
+                        { 
+                            int byteIndex = j / 8; // Index of the byte containing the bit
+    
+                            int bitIndex = 7 - (j % 8); // Index of the bit within the byte (7 to 0)
+    
+                            int mask = 1 << bitIndex; // Mask to extract the bit
+    
+                            // Check if the bit is 1 or 0 in the current byte
+                            boolean isBitSet = (pixels[byteIndex] & mask) != 0;
+    
+                            // Set the color in the array depending on bit
+                            if (isBitSet == true)
+                            {
+                                answerPixelColor[i][j] = Color.white;
+                            }
+                            else if (isBitSet == false)
+                            {
+                                answerPixelColor[i][j] = Color.black;
+                            }
+                        }
+                        
+                    }   
+                    updateLabels(Color.black, answerPixelColor, height, width); // Function to add nonogram logic to the left and top
                 }
+
+                else if (bitDepth == 24) // Read bit depth to determine what algorithm to use
+                {
+                    // Calculate padding for a 24-bit depth BMP file
+                    int padding = (4 - (width * 3) % 4) % 4;
+                    System.out.println("padding: " + padding);
+
+                    boolean isRed = false, isBlue = false, isGreen = false, isBlack = false, isWhite = false;
+                    for (int i = height - 1; i >= 0; i--) // read each row from the bottom up
+                    {
+                        byte[] pixels = new byte[width * 3 + padding];
+                        fis.read(pixels);
+
+                        
+                        for (int j = 0; j < width * 3; j += 3) // read each 3 pixels in BGR format due to little endian
+                        {
+
+                            // Store BGR values in variables
+                            int blue = pixels[j] & 0xFF;
+                            int green = pixels[j + 1] & 0xFF;
+                            int red = pixels[j + 2] & 0xFF;
+
+                            if (blue > red && blue > green) // Populate answerpixelcolor with the significant colors 
+                            {
+                                answerPixelColor[i][j / 3] = Color.blue;
+                                isBlue = true;
+                            }
+                            else if (red > blue && red > green)
+                            {
+                                answerPixelColor[i][j / 3] = Color.red;
+                                isRed = true;
+                            }
+                            else if (green > blue && green > red)
+                            {
+                                answerPixelColor[i][j / 3] = Color.green;
+                                isGreen = true;
+                            }
+                            else if (red == blue && red == green && red != 255)
+                            {
+                                answerPixelColor[i][j / 3] = Color.black;
+                                isBlack = true;
+                            }
+                            else if (red == blue && red == green && red == 255)
+                            {
+                                answerPixelColor[i][j / 3] = Color.white;
+                                isWhite = true;
+                            }
+
+                        }
+                    }
+
+                    // Create arraylist to store colors that are currently in the nonogram
+                    ArrayList<Color> colorList = new ArrayList<>();
+                    if (isGreen == true)
+                    {
+                        colorList.add(Color.green);
+                    }
+                    if (isBlue == true)
+                    {
+                        colorList.add(Color.blue);
+                    }
+                    if (isBlack == true)
+                    {
+                        colorList.add(Color.black);
+                    }
+                    if (isWhite == true)
+                    {
+                        colorList.add(Color.white);
+                    }
+                    if (isRed == true)
+                    {
+                        colorList.add(Color.red);
+                    }                    
+
+                    // Update the mouselistener to contain the colors that are currently in the color arraylist
+                    for (int i = 0; i < width; i++)
+                    {
+                        for (int j = 0; j < height; j++)
+                        {
+                            final int[] currentIndex = {0};
+                            JLabel label = labels[j][i];
+                            label.addMouseListener(new MouseAdapter() 
+                            {
+                                @Override
+                                public void mouseClicked(MouseEvent e) 
+                                {
+                                    JLabel clickedLabel = (JLabel) e.getSource();
+                                    Color nextColor = colorList.get(currentIndex[0]); // Get the next color from the list
+                                    clickedLabel.setBackground(nextColor);
+                                    currentIndex[0] = (currentIndex[0] + 1) % colorList.size(); // Move to the next color index, cycles back to 0 if > list size
+                                    clickedLabel.repaint();
+                                }
+                            });
+                            labels[j][i] = label; // Update the label
+                        }
+                    }
+
+                    //Function to add nonogram logic to top with corresponding colors
+                    if (isBlack == true)
+                    {
+                        updateLabels(Color.black, answerPixelColor, height, width);
+                    }
+                    if (isBlue == true)
+                    {
+                        updateLabels(Color.blue, answerPixelColor, height, width);
+                    }
+                    if (isRed == true)
+                    {
+                        updateLabels(Color.red, answerPixelColor, height, width);
+                    }
+                    if (isGreen == true)
+                    {
+                        updateLabels(Color.green, answerPixelColor, height, width);
+                    }
+
+
+                }
+                else
+                {
+                    JOptionPane.showMessageDialog(null, "BMP file bit depth not supported");
+                }
+
 
                 fis.close();
 
 
-                    // Algorithm to produce numbers on the left of the nonogram
-                    ArrayList<ArrayList<Integer>> y_counterArrayList = new ArrayList<>(); // ArrayList to store counters for each row
-                    for (int y = 0; y < height; y++) 
-                    {
-
-                        ArrayList<Integer> counterArrayList = new ArrayList<>(); // ArrayList to store counters for a single row
-                        int counter = 0; // Initialize counter for current row
-                    
-                        for (int i = 0; i < height; i++) 
-                        {
-                            if (answerPixelColor[y][i] == Color.black) 
-                            {
-                                // Increment counter if the current color is black
-                                counter++;
-                            } 
-                            else if (answerPixelColor[y][i] != Color.black)
-                            {
-                                // Add the current counter value to the list and reset counter
-                                if (counter > 0) 
-                                {
-                                    counterArrayList.add(counter);
-                                }
-                                counter = 0; // Start a new counter for the current color
-                            }
-                        }
-                    
-                        // Add the last counter value to the list
-                        if (counter > 0) 
-                        {
-                            counterArrayList.add(counter);
-                        }
-                    
-                        // Add the list of counters for the current row to the main list
-                        y_counterArrayList.add(counterArrayList);
-                        
-                    }
-
-                    // Code to repaint side labels to contain nonogram numbers
-                    for (int y = 0; y < y_counterArrayList.size(); y++) 
-                    {
-                        Integer[] counts = y_counterArrayList.get(y).toArray(new Integer[0]); // Get counts for current row
-                        JLabel label = leftLabels[y];
-                        label.setText("<html>" + Arrays.toString(counts) + "<html>");
-                        label.setHorizontalAlignment(SwingConstants.CENTER);
-                        label.setVerticalAlignment(SwingConstants.CENTER);
-                        label.repaint();
-                    }
-
-
-                    // Algorithm to produce numbers on the top of the nonogram
-                    ArrayList<ArrayList<Integer>> x_counterArrayList = new ArrayList<>(); // ArrayList to store counters for each column
-                    for (int x = 0; x < width; x++) 
-                    {
-
-                        ArrayList<Integer> counterArrayList = new ArrayList<>(); // ArrayList to store counters for a single column
-                        int counter = 0; // Initialize counter
-                    
-                        for (int i = 0; i < width; i++) 
-                        {
-                            if (answerPixelColor[i][x] == Color.black) 
-                            {
-                                // Increment counter if the current color is black
-                                counter++;
-                            } 
-                            else if (answerPixelColor[i][x] != Color.black)
-                            {
-                                // Add the current counter value to the list and reset counter
-                                if (counter > 0) 
-                                {
-                                    counterArrayList.add(counter);
-                                }
-                                counter = 0; // Start a new counter for the current color
-                            }
-                        }
-                    
-                        // Add the last counter value to the list
-                        if (counter > 0) 
-                        {
-                            counterArrayList.add(counter);
-                        }
-                    
-                        // Add the list of counters for the current column to the main list
-                        x_counterArrayList.add(counterArrayList);
-                        
-                    }
-
-                    // Code to repaint side labels to contain nonogram numbers
-                    for (int x = 0; x < x_counterArrayList.size(); x++) 
-                    {
-                        Integer[] counts = x_counterArrayList.get(x).toArray(new Integer[0]); // Get counts for current column
-                        JLabel label = topLabels[x];
-                        label.setText("<html>" + Arrays.toString(counts) + "<html>");
-                        label.setVerticalAlignment(SwingConstants.BOTTOM);
-                        label.setHorizontalAlignment(SwingConstants.CENTER);
-                        label.repaint();
-                    }
-
-                    /*  Update frame size
-                    int frameSize_X = (width + 1) * LABEL_SIZE;
-                    int frameSize_Y = (height + 1) * LABEL_SIZE;
-                    setSize(frameSize_X, frameSize_Y); // Update the size of the frame
-                    revalidate(); // Revalidate the layout to reflect the changes
-                    repaint(); // Repaint the frame to update the changes
-                    */
             } 
-                /*else 
-                {
-                    System.out.println("Failed to load image.");
-                }*/
              
             catch (IOException e) 
             {
@@ -351,7 +581,6 @@ public class Nonogram extends JFrame
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                System.out.println("Check Answer Button clicked!");
                 if (answerPixelColor != null)
                     {
                         int[][] checkedAnswerResult;
@@ -396,7 +625,10 @@ public class Nonogram extends JFrame
                                 if (checkedAnswerResult[y][x] == 1)
                                 {   
                                     JLabel label = labels[y][x];
-                                    label.setBackground(Color.RED); //Repaint label to red if label is incorrect
+                                    label.setBackground(Color.RED); //Repaint label to red if label is incorrect]
+                                    label.setText("X");
+                                    label.setVerticalAlignment(SwingConstants.CENTER);
+                                    label.setHorizontalAlignment(SwingConstants.CENTER);
                                     label.repaint();
                                     label.setOpaque(true);
                                     labels[y][x] = label;
@@ -425,11 +657,21 @@ public class Nonogram extends JFrame
             @Override
             public void actionPerformed(ActionEvent e) 
             {
-                System.out.println("Show Answer Button clicked!");
                 if (showing == false) // Paint grid with imported BMP
                 {
                     if (answerPixelColor != null)
                     {
+                        // Save user progress
+                        for (int y = 0; y < height; y++)
+                        {
+                            for (int x = 0; x < width; x++)
+                            {
+                                JLabel label = labels[y][x];
+                                currentuserColors[y][x] = label.getBackground();
+                            }
+                        }
+                        
+                        // Paint grid with answerPixelColor
                         for (int y = 0; y < height; y++)
                         {
                             for (int x = 0; x < width; x++)
@@ -437,6 +679,7 @@ public class Nonogram extends JFrame
                                 Color pixelColor = answerPixelColor[y][x];
                                 JLabel label = labels[y][x];
                                 label.setBackground(pixelColor);
+                                label.setText("");
                                 label.repaint(); // update the label visually
                                 labels[y][x] = label;
                             }
@@ -448,6 +691,7 @@ public class Nonogram extends JFrame
                         JOptionPane.showMessageDialog(null, "Image has not been imported!");
                     }
                 }
+
                 else // Repaint grid to hide BMP
                 {
                     for (int y = 0; y < height; y++)
@@ -455,7 +699,8 @@ public class Nonogram extends JFrame
                         for (int x = 0; x < width; x++)
                         {
                             JLabel label = labels[y][x];
-                            label.setBackground(Color.white);
+                            label.setBackground(currentuserColors[y][x]);
+                            label.setText("");
                             labels[y][x] = label;
                             label.repaint(); // update the label visually
                         }
@@ -465,11 +710,35 @@ public class Nonogram extends JFrame
             }
         });
 
+
+        // Button to wipe the screen to white labels
+        JButton wipeButton = new JButton("Wipe Grid (White)");
+        wipeButton.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e) 
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    for (int x = 0; x < width; x++)
+                    {
+                        JLabel label = labels[y][x];
+                        label.setText("");
+                        label.setBackground(Color.white);
+                        labels[y][x] = label;
+                        label.repaint(); // update the label visually
+                    }
+                }
+            }
+        });
+
+
         JPanel buttonPanel = new JPanel(); // Construct a panel for buttons
         buttonPanel.setBackground(Color.white); 
         buttonPanel.add(importButton); // Add the buttons to the panels
         buttonPanel.add(ansButton);
         buttonPanel.add(showButton);
+        buttonPanel.add(wipeButton);
 
         add(gridPanel, BorderLayout.CENTER); // Set the grids to the center
         add(topPanel, BorderLayout.NORTH); // Adds topPanel to the top
