@@ -27,9 +27,9 @@ LanCS project first year
 ----------------------------------------------------
 How to run:
 - Linux:
-- wget https://github.com/LeoLeungHei/Summer-nonogram-project/blob/main/Nonogram.java](https://raw.githubusercontent.com/LeoLeungHei/Summer-nonogram-project/main/Nonogram.java
+- wget https://raw.githubusercontent.com/LeoLeungHei/Summer-nonogram-project/main/Nonogram.java
 - Windows:
-- curl -O https://github.com/LeoLeungHei/Summer-nonogram-project/blob/main/Nonogram.java](https://raw.githubusercontent.com/LeoLeungHei/Summer-nonogram-project/main/Nonogram.java
+- curl -O https://raw.githubusercontent.com/LeoLeungHei/Summer-nonogram-project/main/Nonogram.java
 - Both:
 - javac Nonogram.java
 - java Nonogram
