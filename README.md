@@ -24,3 +24,12 @@ LanCS project first year
 - updated nonogram logic to a function that changes color based on the bmp
 - addaed a wipe button
 - made show/hide button save user progress and revert to it
+----------------------------------------------------
+How to run:
+Linux:
+wget https://github.com/LeoLeungHei/Summer-nonogram-project/blob/main/Nonogram.java
+Windows:
+curl -O https://github.com/LeoLeungHei/Summer-nonogram-project/blob/main/Nonogram.java
+Both:
+javac Nonogram.java
+java Nonogram
