@@ -18,3 +18,9 @@ LanCS project first year
 -----------------------------------------------------
 - 6th commit on 13/05/2024
 - changed file reading algorithm to read bmp file from first priciples with no external libraries
+-----------------------------------------------------
+- 7th commit on 14/05/2024
+- added seperate algorithms for reading 1 and 24 bit depth bmp files
+- updated nonogram logic to a function that changes color based on the bmp
+- addaed a wipe button
+- made show/hide button save user progress and revert to it
